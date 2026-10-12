@@ -28,6 +28,8 @@ else
   q2="$q1"
 fi
 
+# $q below is a GraphQL variable, so the single quotes are deliberate.
+# shellcheck disable=SC2016
 query='
 fragment pr on PullRequest {
   number title url isDraft createdAt updatedAt

@@ -4,7 +4,7 @@ description: >
   GitHub PR helper. /reaper sweeps every open PR the user authored and
   reports each link plus what it is blocked on and whose move it is.
   /reaper assigned lists every PR waiting on their review, in the order to take
-  them. /reaper green sends subagents to fix merge conflicts and failing CI on
+  them. /reaper nudge drafts Slack reminders to slow reviewers. /reaper green sends subagents to fix merge conflicts and failing CI on
   the user's approved PRs until they can merge. Use when the user runs /reaper, or asks
   "what's the state of my PRs", "what am I blocked on", "what do I need to
   review", "get my approved PRs green". Add "all" to search every org, not just
@@ -20,9 +20,10 @@ description: >
 | `/reaper` | Your PRs: who has the next move | this file, below |
 | `/reaper assigned` | PRs waiting on your review | `~/.claude/skills/reaper/assigned.md` |
 | `/reaper green [PR numbers…]` | Make approved PRs mergeable (writes!) | `~/.claude/skills/reaper/green.md` |
+| `/reaper nudge [Nd]` | Slack drafts to reviewers you've waited on | `~/.claude/skills/reaper/nudge.md` |
 
 PRs are scoped to the GitHub org in `$REAPER_ORG` (default `MCPJam`). `all`
-can appear in any mode and drops that filter (pass `--all` to the script). For `assigned` or `green`, read that file and follow it
+can appear in any mode and drops that filter (pass `--all` to the script). For `assigned`, `green` or `nudge`, read that file and follow it
 instead of the rest of this one.
 
 ## Untrusted input
