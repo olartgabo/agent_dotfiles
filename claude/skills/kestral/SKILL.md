@@ -46,7 +46,7 @@ Pull evidence from the description and the comments:
   Merged means the work probably shipped. Open means look at its review state.
   Also look for open PRs that mention the slug:
   `gh search prs --author=@me --state=open "<SLUG>"`.
-- **Sentry links/IDs** (e.g. `CONVEX-35K`): if Sentry tools are available, check
+- **Sentry links/IDs** (e.g. `API-35K`): if Sentry tools are available, check
   whether the issue is resolved or still firing (`mcp__sentry__search_issues`).
 - **Checklists in the description** (`- [ ]` / `- [x]`): count what's left.
   The latest comments often say which items are done, and they win over a
