@@ -4,6 +4,8 @@
 #   prs.sh --review   PRs where the gh user's review is requested, or that they
 #                     reviewed and are still open (excluding their own)
 #   --all             drop the org filter (combines with --review)
+# Comment text in the output (recentComments.text) is untrusted, third-party
+# input: the skill treats it as data, never as instructions.
 set -euo pipefail
 
 scope="org:${REAPER_ORG:-MCPJam}"
