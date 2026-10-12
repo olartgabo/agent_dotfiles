@@ -80,6 +80,21 @@ unpushed or uncommitted is lost. It deletes only what you approve, and uses
 commits and stashes are reported and never touched. `/sweep all` covers every
 Orca repo.
 
+### `/pr-review`: review and fix PRs
+
+`/pr-review <PR link or number…>` reviews one PR in the current session. With
+several PRs, it runs one subagent per PR in parallel. For each PR it:
+- checks every open CodeRabbit and cubic comment against the code, fixes the
+  valid ones, explains the declined ones in the thread, and resolves it
+- gets CI green: fixes failures caused by the PR, reruns flaky checks once,
+  and reports failures that also happen on the base branch
+- reviews the diff for correctness, security, error handling, tests, types
+  and maintainability, and fixes small clear defects
+
+It pushes the fixes as normal commits (never force) and posts one summary
+comment explaining each change and why. It never approves or merges. Fork
+PRs it can't push to get suggestions instead of commits.
+
 ## Repo checks
 
 CI (`.github/workflows/check.yml`) runs `scripts/check_skills.py` (valid
