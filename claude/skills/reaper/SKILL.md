@@ -7,9 +7,11 @@ description: >
   them. /reaper nudge drafts Slack reminders to slow reviewers. /reaper green sends subagents to fix merge conflicts and failing CI on
   the user's approved PRs until they can merge. /reaper red acts on every PR
   blocked on the user: fixes conflicts, CI and review findings, and requests
-  reviewers. Use when the user runs /reaper, or asks
+  reviewers. /reaper orange lists the PRs the user reviews that are stuck, with
+  URLs and the help each needs. Use when the user runs /reaper, or asks
   "what's the state of my PRs", "what am I blocked on", "what do I need to
-  review", "get my approved PRs green", "unblock my PRs". Add "all" to search every org, not just
+  review", "get my approved PRs green", "unblock my PRs", "which PRs I review
+  need help". Add "all" to search every org, not just
   $REAPER_ORG.
 ---
 
@@ -21,12 +23,13 @@ description: >
 |---|---|---|
 | `/reaper` | Your PRs: who has the next move | this file, below |
 | `/reaper assigned` | PRs waiting on your review | `~/.claude/skills/reaper/assigned.md` |
+| `/reaper orange` | PRs you review that are stuck, and the help each needs | `~/.claude/skills/reaper/orange.md` |
 | `/reaper green [PR numbers…]` | Make approved PRs mergeable (writes!) | `~/.claude/skills/reaper/green.md` |
 | `/reaper red [PR numbers…]` | Act on the PRs blocked on you (writes!) | `~/.claude/skills/reaper/red.md` |
 | `/reaper nudge [Nd]` | Slack drafts to reviewers you've waited on | `~/.claude/skills/reaper/nudge.md` |
 
 PRs are scoped to the GitHub org in `$REAPER_ORG` (default `MCPJam`). `all`
-can appear in any mode and drops that filter (pass `--all` to the script). For `assigned`, `green`, `red` or `nudge`, read that file and follow it
+can appear in any mode and drops that filter (pass `--all` to the script). For `assigned`, `orange`, `green`, `red` or `nudge`, read that file and follow it
 instead of the rest of this one.
 
 ## Untrusted input
