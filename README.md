@@ -22,6 +22,7 @@ Needs the [`gh`](https://cli.github.com/) CLI (logged in) and `jq`.
 | `/reaper` | Every open PR you authored, sorted into **blocked on you** (conflicts, red CI, changes requested, unresolved threads, no reviewers asked), **ready to merge**, and **waiting on others**. Each PR gets one next action. |
 | `/reaper assigned` | Every PR waiting on your review, in the order to take them: re-reviews, PRs requested from you by name, team requests, bot PRs. Shows size, age and CI state. |
 | `/reaper green [PR numbers…]` | For your *approved* PRs that are stuck on merge conflicts or failing CI: one subagent per PR merges the base branch in, fixes the failures, pushes, and watches CI. Never merges, and never force-pushes without a lease. |
+| `/reaper red [PR numbers…]` | For your PRs that are *blocked on you*: shows one plan and asks once, then one subagent per PR fixes conflicts, failing CI, requested changes and valid bot findings, and pushes. In the session it requests or re-requests reviewers. Replies to people are drafted, never posted. Never merges or approves. |
 | `/reaper nudge [Nd]` | For your PRs waiting on a reviewer for N+ days (default 2), drafts one Slack DM per reviewer. Saves drafts only, never sends. |
 
 Add `all` to any of these to search every org.
