@@ -21,8 +21,13 @@ Needs the [`gh`](https://cli.github.com/) CLI (logged in) and `jq`.
 |---|---|
 | `/reaper` | Every open PR you authored, sorted into **blocked on you** (conflicts, red CI, changes requested, unresolved threads, no reviewers asked), **ready to merge**, and **waiting on others**. Each PR gets one next action. |
 | `/reaper assigned` | Every PR waiting on your review, in the order to take them: re-reviews, PRs requested from you by name, team requests, bot PRs. Shows size, age and CI state. |
+| `/reaper orange` | Every PR you review, checked for whether it's stuck: waiting on your answer or re-review, author stuck on conflicts, red CI or requested changes, or nobody moving it. Lists each by full URL with the help it needs. Read-only. |
 | `/reaper green [PR numbers…]` | For your *approved* PRs that are stuck on merge conflicts or failing CI: one subagent per PR merges the base branch in, fixes the failures, pushes, and watches CI. Never merges, and never force-pushes without a lease. |
+| `/reaper red [PR numbers…]` | For your PRs that are *blocked on you*: shows one plan and asks once, then one subagent per PR fixes conflicts, failing CI, requested changes and valid bot findings, and pushes. In the session it requests or re-requests reviewers. Replies to people are drafted, never posted. Never merges or approves. |
 | `/reaper nudge [Nd]` | For your PRs waiting on a reviewer for N+ days (default 2), drafts one Slack DM per reviewer. Saves drafts only, never sends. |
+| `/reaper rereview [PR numbers…]` | For PRs you've reviewed that changed since: works out the delta (range-diff for rebases, so a pure rebase shows as one), checks each of your earlier asks against it, and drafts a re-review of only that delta. Submits a review only after you approve the draft. |
+| `/reaper owner [PR numbers…]` | PRs waiting on your review that nobody has approved yet, so yours is the review that moves them. Reviewable ones come first, smallest first; red, changes-requested and dead PRs are grouped separately. Reviews inline and submits only after you approve the draft. |
+| `/reaper cull [Nd] [PR numbers…]` | For PRs you authored or review with no activity in N days (default 14): checks for a replacement PR (same ticket ID or title), whether the change is already on the base (`git merge-tree`), and whether the code it touches still exists. Verdicts are superseded, obsolete, unclear or still relevant. Closes only the PRs you name after the report, with a one-line comment linking the replacement, and never deletes branches. |
 
 Add `all` to any of these to search every org.
 

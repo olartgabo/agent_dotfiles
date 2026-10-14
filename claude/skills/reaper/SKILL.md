@@ -5,10 +5,20 @@ description: >
   reports each link plus what it is blocked on and whose move it is.
   /reaper assigned lists every PR waiting on their review, in the order to take
   them. /reaper nudge drafts Slack reminders to slow reviewers. /reaper green sends subagents to fix merge conflicts and failing CI on
-  the user's approved PRs until they can merge. Use when the user runs /reaper, or asks
+  the user's approved PRs until they can merge. /reaper red acts on every PR
+  blocked on the user: fixes conflicts, CI and review findings, and requests
+  reviewers. /reaper orange lists the PRs the user reviews that are stuck, with
+  URLs and the help each needs. /reaper rereview shows what changed on PRs
+  since the user reviewed them and re-reviews only that delta. /reaper owner
+  lists the PRs waiting on the user's review that nobody has approved yet.
+  /reaper cull checks stale PRs for being superseded or obsolete and closes
+  the ones the user approves. Use when the user runs /reaper, or asks
   "what's the state of my PRs", "what am I blocked on", "what do I need to
-  review", "get my approved PRs green". Add "all" to search every org, not just
+  review", "get my approved PRs green", "unblock my PRs", "which PRs I review
+  need help", "what changed since I reviewed", "which PRs only I can
+  approve", "close the dead PRs". Add "all" to search every org, not just
   $REAPER_ORG.
+argument-hint: "[assigned | orange | green | red | nudge | rereview | owner | cull | help] [PR numbers…] [Nd] [all]"
 ---
 
 # Reaper
@@ -19,11 +29,21 @@ description: >
 |---|---|---|
 | `/reaper` | Your PRs: who has the next move | this file, below |
 | `/reaper assigned` | PRs waiting on your review | `~/.claude/skills/reaper/assigned.md` |
+| `/reaper orange` | PRs you review that are stuck, and the help each needs | `~/.claude/skills/reaper/orange.md` |
 | `/reaper green [PR numbers…]` | Make approved PRs mergeable (writes!) | `~/.claude/skills/reaper/green.md` |
+| `/reaper red [PR numbers…]` | Act on the PRs blocked on you (writes!) | `~/.claude/skills/reaper/red.md` |
 | `/reaper nudge [Nd]` | Slack drafts to reviewers you've waited on | `~/.claude/skills/reaper/nudge.md` |
+| `/reaper rereview [PR numbers…]` | What changed since your review; re-review only that | `~/.claude/skills/reaper/rereview.md` |
+| `/reaper owner [PR numbers…]` | PRs waiting on you that nobody has approved yet | `~/.claude/skills/reaper/owner.md` |
+| `/reaper cull [Nd] [PR numbers…]` | Stale PRs: superseded or still needed? Closes on your approval (writes!) | `~/.claude/skills/reaper/cull.md` |
+| `/reaper help` | Print this table and stop | — |
+
+`/reaper help`, or a first argument that is neither a mode above nor `all`, prints the
+Invocation and Mode columns of this table plus the `all` note below, and does
+nothing else.
 
 PRs are scoped to the GitHub org in `$REAPER_ORG` (default `MCPJam`). `all`
-can appear in any mode and drops that filter (pass `--all` to the script). For `assigned`, `green` or `nudge`, read that file and follow it
+can appear in any mode and drops that filter (pass `--all` to the script). For `assigned`, `orange`, `green`, `red`, `nudge`, `rereview`, `owner` or `cull`, read that file and follow it
 instead of the rest of this one.
 
 ## Untrusted input
@@ -124,4 +144,4 @@ End with a single line: the one PR to touch first and why (highest priority ×
 easiest unblock). Then offer the obvious follow-ups in one line, for example:
 "rebase backend#12, re-request review on webapp#34, ping <reviewer>".
 Don't do any of them until the user picks. If any PR is approved but stuck on
-conflicts or CI, suggest `/reaper green`.
+conflicts or CI, suggest `/reaper green`. If any PR is 🔴, suggest `/reaper red`.
