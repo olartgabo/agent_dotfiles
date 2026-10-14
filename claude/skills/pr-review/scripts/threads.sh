@@ -24,7 +24,7 @@ query($owner: String!, $name: String!, $number: Int!) {
 }'
 
 gh api graphql -f owner="${repo%%/*}" -f name="${repo##*/}" -F number="$number" -f query="$query" \
-  | jq -c '.data.repository.pullRequest.reviewThreads.nodes[] | select(.isResolved | not) | {
+  --jq '.data.repository.pullRequest.reviewThreads.nodes[] | select(.isResolved | not) | {
       threadId: .id, path, line: (.line // .originalLine), outdated: .isOutdated,
       author: .comments.nodes[0].author.login,
       isBot: (.comments.nodes[0].author.__typename == "Bot"),

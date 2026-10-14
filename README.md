@@ -15,7 +15,7 @@ git clone https://github.com/olartgabo/agent_dotfiles.git ~/agent_dotfiles
 
 ### `/reaper`: open pull requests
 
-Needs the [`gh`](https://cli.github.com/) CLI (logged in) and `jq`.
+Needs the [`gh`](https://cli.github.com/) CLI (logged in) and bash. The scripts run their jq inside `gh --jq`, so there is no separate `jq` install, and they work on Linux, macOS and Windows (Git Bash).
 
 | Command | What it does |
 |---|---|
