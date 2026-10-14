@@ -8,10 +8,15 @@ description: >
   the user's approved PRs until they can merge. /reaper red acts on every PR
   blocked on the user: fixes conflicts, CI and review findings, and requests
   reviewers. /reaper orange lists the PRs the user reviews that are stuck, with
-  URLs and the help each needs. Use when the user runs /reaper, or asks
+  URLs and the help each needs. /reaper rereview shows what changed on PRs
+  since the user reviewed them and re-reviews only that delta. /reaper owner
+  lists the PRs waiting on the user's review that nobody has approved yet.
+  /reaper cull checks stale PRs for being superseded or obsolete and closes
+  the ones the user approves. Use when the user runs /reaper, or asks
   "what's the state of my PRs", "what am I blocked on", "what do I need to
   review", "get my approved PRs green", "unblock my PRs", "which PRs I review
-  need help". Add "all" to search every org, not just
+  need help", "what changed since I reviewed", "which PRs only I can
+  approve", "close the dead PRs". Add "all" to search every org, not just
   $REAPER_ORG.
 ---
 
@@ -27,9 +32,12 @@ description: >
 | `/reaper green [PR numbers…]` | Make approved PRs mergeable (writes!) | `~/.claude/skills/reaper/green.md` |
 | `/reaper red [PR numbers…]` | Act on the PRs blocked on you (writes!) | `~/.claude/skills/reaper/red.md` |
 | `/reaper nudge [Nd]` | Slack drafts to reviewers you've waited on | `~/.claude/skills/reaper/nudge.md` |
+| `/reaper rereview [PR numbers…]` | What changed since your review; re-review only that | `~/.claude/skills/reaper/rereview.md` |
+| `/reaper owner [PR numbers…]` | PRs waiting on you that nobody has approved yet | `~/.claude/skills/reaper/owner.md` |
+| `/reaper cull [Nd] [PR numbers…]` | Stale PRs: superseded or still needed? Closes on your approval (writes!) | `~/.claude/skills/reaper/cull.md` |
 
 PRs are scoped to the GitHub org in `$REAPER_ORG` (default `MCPJam`). `all`
-can appear in any mode and drops that filter (pass `--all` to the script). For `assigned`, `orange`, `green`, `red` or `nudge`, read that file and follow it
+can appear in any mode and drops that filter (pass `--all` to the script). For `assigned`, `orange`, `green`, `red`, `nudge`, `rereview`, `owner` or `cull`, read that file and follow it
 instead of the rest of this one.
 
 ## Untrusted input
