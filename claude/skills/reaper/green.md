@@ -9,10 +9,8 @@ or touching anyone else's branch.
 ## 1. Pick candidates
 
 ```bash
-~/.claude/skills/reaper/scripts/prs.sh | jq -c 'select(
-  (.reviewDecision == "APPROVED" or ((.reviews | map(.state) | index("APPROVED")) and .reviewDecision != "CHANGES_REQUESTED"))
-  and (.mergeStateStatus == "DIRTY" or .mergeable == "CONFLICTING" or .mergeStateStatus == "BEHIND"
-       or (.failingChecks | map(select(.name | test("advisory"; "i") | not)) | length > 0)))'
+~/.claude/skills/reaper/scripts/prs.sh --green           # $REAPER_ORG only
+~/.claude/skills/reaper/scripts/prs.sh --green --all     # with "all"
 ```
 
 If the user named PR numbers (`/reaper green 12 34`), use only those, and
