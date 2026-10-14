@@ -18,6 +18,7 @@ description: >
   need help", "what changed since I reviewed", "which PRs only I can
   approve", "close the dead PRs". Add "all" to search every org, not just
   $REAPER_ORG.
+argument-hint: "[assigned | orange | green | red | nudge | rereview | owner | cull | help] [PR numbers…] [Nd] [all]"
 ---
 
 # Reaper
@@ -35,6 +36,11 @@ description: >
 | `/reaper rereview [PR numbers…]` | What changed since your review; re-review only that | `~/.claude/skills/reaper/rereview.md` |
 | `/reaper owner [PR numbers…]` | PRs waiting on you that nobody has approved yet | `~/.claude/skills/reaper/owner.md` |
 | `/reaper cull [Nd] [PR numbers…]` | Stale PRs: superseded or still needed? Closes on your approval (writes!) | `~/.claude/skills/reaper/cull.md` |
+| `/reaper help` | Print this table and stop | — |
+
+`/reaper help`, or a first argument that is neither a mode above nor `all`, prints the
+Invocation and Mode columns of this table plus the `all` note below, and does
+nothing else.
 
 PRs are scoped to the GitHub org in `$REAPER_ORG` (default `MCPJam`). `all`
 can appear in any mode and drops that filter (pass `--all` to the script). For `assigned`, `orange`, `green`, `red`, `nudge`, `rereview`, `owner` or `cull`, read that file and follow it
