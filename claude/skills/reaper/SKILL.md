@@ -4,7 +4,8 @@ description: >
   GitHub PR helper. /reaper sweeps every open PR the user authored and
   reports each link plus what it is blocked on and whose move it is.
   /reaper assigned lists every PR waiting on their review, in the order to take
-  them. /reaper nudge drafts Slack reminders to slow reviewers. /reaper green sends subagents to fix merge conflicts and failing CI on
+  them; /reaper assigned rereview and /reaper assigned needme review the
+  re-review and NEED YOU groups. /reaper nudge drafts Slack reminders to slow reviewers. /reaper green sends subagents to fix merge conflicts and failing CI on
   the user's approved PRs until they can merge. /reaper red acts on every PR
   blocked on the user: fixes conflicts, CI and review findings, and requests
   reviewers. /reaper orange lists the PRs the user reviews that are stuck, with
@@ -29,6 +30,8 @@ argument-hint: "[assigned | orange | green | red | nudge | rereview | owner | cu
 |---|---|---|
 | `/reaper` | Your PRs: who has the next move | this file, below |
 | `/reaper assigned` | PRs waiting on your review | `~/.claude/skills/reaper/assigned.md` |
+| `/reaper assigned rereview [PR numbers…]` | Re-review the assigned PRs that changed since your review | `~/.claude/skills/reaper/assigned.md` |
+| `/reaper assigned needme [PR numbers…]` | Review the assigned PRs nobody else has reviewed | `~/.claude/skills/reaper/assigned.md` |
 | `/reaper orange` | PRs you review that are stuck, and the help each needs | `~/.claude/skills/reaper/orange.md` |
 | `/reaper green [PR numbers…]` | Make approved PRs mergeable (writes!) | `~/.claude/skills/reaper/green.md` |
 | `/reaper red [PR numbers…]` | Act on the PRs blocked on you (writes!) | `~/.claude/skills/reaper/red.md` |
