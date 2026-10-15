@@ -27,8 +27,14 @@ Map each blocker to an action. A PR can have several. Do them in this order:
 | Unresolved human threads | Fix what's clearly asked, and draft the reply | subagent fixes, you draft |
 | Unanswered human question | Draft the answer | you |
 | No reviewers asked | Propose 1–2: CODEOWNERS, else the most frequent recent authors of the changed files (`git log --since=90.days --format=%an -- <files>`), minus the user | you |
+| Approval only from someone without write (`nonCountingReviews`) | Propose 1–2 reviewers who have write access, as in the row above | you |
 | Changes addressed, reviewer not re-requested | `gh pr edit <n> -R <repo> --add-reviewer <login>` | you |
 | Draft | Report only: finish it or close it is the user's call | — |
+
+Propose only reviewers whose approval counts:
+`gh api repos/<repo>/collaborators/<login>/permission --jq .permission` must
+be `write`, `maintain` or `admin`. If nobody who fits has it, say so in the
+plan instead of requesting someone.
 
 Look up the base branch rules once per repo with
 `gh api repos/<repo>/rules/branches/<base>`. If `dismiss_stale_reviews_on_push`

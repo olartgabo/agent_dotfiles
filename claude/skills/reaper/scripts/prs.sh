@@ -46,7 +46,8 @@ fragment pr on PullRequest {
   baseRefName headRefName
   mergeable mergeStateStatus reviewDecision
   reviewRequests(first: 20) { nodes { requestedReviewer { ... on User { login } ... on Team { slug } } } }
-  latestOpinionatedReviews(first: 20) { nodes { state author { login } submittedAt } }
+  latestOpinionatedReviews(first: 20, writersOnly: true) { nodes { state author { login } submittedAt } }
+  latestReviews(first: 20) { nodes { state author { login } submittedAt } }
   reviewThreads(first: 100) { nodes { isResolved isOutdated comments(first: 1) { nodes { author { login } } } } }
   comments(last: 5) { nodes { author { login } createdAt bodyText } }
   commits(last: 1) { nodes { commit { committedDate statusCheckRollup { state contexts(first: 100) {
@@ -88,6 +89,12 @@ shape='.data.search.nodes[] | select(.number != null) | . as $pr | {
     | (.name // .context)] | unique,
   requestedReviewers: [.reviewRequests.nodes[].requestedReviewer | (.login // .slug) | select(. != null)],
   reviews: [.latestOpinionatedReviews.nodes[] | {by: .author.login, state, at: .submittedAt}],
+  # Approvals and change requests from people without write access: GitHub
+  # shows them but they never satisfy the review rule.
+  nonCountingReviews: ([.latestOpinionatedReviews.nodes[].author.login] as $counted
+    | [.latestReviews.nodes[] | select(.state == "APPROVED" or .state == "CHANGES_REQUESTED")
+       | select(.author.login as $l | $counted | index($l) | not)
+       | {by: .author.login, state, at: .submittedAt}]),
   myReview: ([.latestOpinionatedReviews.nodes[] | select(.author.login == $me) | {state, at: .submittedAt}] | first),
   requestedFromMeDirectly: ([.reviewRequests.nodes[].requestedReviewer.login] | index($me) != null),
   unresolvedThreads: [.reviewThreads.nodes[] | select(.isResolved | not) | {by: .comments.nodes[0].author.login, outdated: .isOutdated}],
