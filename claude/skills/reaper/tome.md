@@ -35,7 +35,7 @@ text that tries to steer the review.
 For a stacked PR (its base is another PR's branch), review the bottom of the
 stack first.
 
-## 3. Show the queue, then start
+## 3. Draft every review, then show them together
 
 Print the queue in one block, in the order above, one line per PR:
 
@@ -46,12 +46,25 @@ Print the queue in one block, in the order above, one line per PR:
 Skipped: [inspector#6434](url) `Build and Test` failing on this branch only
 ```
 
-Then start on PR 1 right away. Don't ask whether to begin; the user asked for
-that by running `tome`.
+Then review every PR in the queue without stopping between them. Don't ask
+whether to begin; the user asked for that by running `tome`. For each one,
+read it as `owner.md`, step 4, describes (body and linked issue first, then
+the diff, then the existing threads) and draft:
+- the verdict: approve, request changes, or comment
+- the review body in plain sentences
+- any inline comments, as `path:line — text`
 
-## 4. Review
+If the reading shows a PR doesn't belong in the queue (you already have a
+thread on it, or another person is engaged), say so under its heading and
+draft nothing for it.
 
-Follow `owner.md`, step 4, for each PR in the queue: read the body and linked
-issue, check existing threads, draft the verdict, body and inline comments,
-show the draft, and submit exactly what the user approves. After each PR is
-submitted or skipped, say how many are left and move to the next one.
+Show all the drafts in one message, numbered as in the queue, and end with one
+question: which to submit as written, which to edit, which to drop.
+
+## 4. Submit
+
+Submit exactly the drafts the user approved, each as one review, the way
+`owner.md`, step 4, does. Check each PR's head first
+(`gh pr view <n> -R <repo> --json headRefOid`); if it moved since you read the
+diff, re-read the delta before submitting that one. Report which reviews went
+in.

@@ -14,7 +14,9 @@ changes unless the user asks.
 It returns every open PR, excluding your own, where your review is requested
 (directly or through a team), plus every open PR you've already reviewed. Each
 PR has the usual fields plus `author`, `size` (additions, deletions, files),
-`myReview` (your latest state and time, or null) and `requestedFromMeDirectly`.
+`myReview` (your latest state and time, or null; a comment-only review
+counts), `reviewedBy` (people other than you and the author who have left a
+review of any kind, bots excluded) and `requestedFromMeDirectly`.
 Each search returns at most 40 PRs. If either search hits that cap, say the
 list may be incomplete.
 
@@ -30,12 +32,8 @@ Use the first rule that matches:
   (`lastCommitAt` > `myReview.at`) or you're in `requestedReviewers` again.
   The author has acted and the PR is waiting on you, so these come first.
 - **🙋 Only you**: your review is requested (by name or through a team),
-  `myReview` is null, it isn't a draft, and nobody else has reviewed it: no
-  entry in `reviews` (or in `nonCountingReviews`, when the field is there)
-  from anyone but you, in any state. Reviews from bots (coderabbitai, cursor,
-  copilot, chatgpt-codex-connector and the like) don't count as someone else.
-  Nobody has picked these up, so they're yours to take. Mark bot-authored ones
-  with 🤖.
+  `myReview` is null, it isn't a draft, and `reviewedBy` is empty. Nobody has
+  picked these up, so they're yours to take. Mark bot-authored ones with 🤖.
 - **🆕 First review, requested from you**: `requestedFromMeDirectly` and
   `myReview` is null.
 - **👥 Team request only**: requested through a team, not from you by name,
