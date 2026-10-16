@@ -57,6 +57,7 @@ fragment pr on PullRequest {
     }
   } } } } }
   labels(first: 20) { nodes { name } }
+  reviews(last: 100) { nodes { state author { login __typename } submittedAt } }
 }
 query($q: String!) {
   search(query: $q, type: ISSUE, first: 40) { nodes { ...pr } }
@@ -95,7 +96,12 @@ shape='.data.search.nodes[] | select(.number != null) | . as $pr | {
     | [.latestReviews.nodes[] | select(.state == "APPROVED" or .state == "CHANGES_REQUESTED")
        | select(.author.login as $l | $counted | index($l) | not)
        | {by: .author.login, state, at: .submittedAt}]),
-  myReview: ([.latestOpinionatedReviews.nodes[] | select(.author.login == $me) | {state, at: .submittedAt}] | first),
+  # Approvals and change requests win; a comment-only review still counts as
+  # having reviewed, which latestOpinionatedReviews leaves out.
+  myReview: (([.latestOpinionatedReviews.nodes[] | select(.author.login == $me) | {state, at: .submittedAt}] | first)
+    // ([.reviews.nodes[] | select(.author.login == $me and .state != "PENDING") | {state, at: .submittedAt}] | last)),
+  reviewedBy: [.reviews.nodes[] | select(.state != "PENDING" and .author.__typename != "Bot"
+      and .author.login != $me and .author.login != $pr.author.login) | .author.login] | unique,
   requestedFromMeDirectly: ([.reviewRequests.nodes[].requestedReviewer.login] | index($me) != null),
   unresolvedThreads: [.reviewThreads.nodes[] | select(.isResolved | not) | {by: .comments.nodes[0].author.login, outdated: .isOutdated}],
   recentComments: [.comments.nodes[] | select(.author.login != $pr.author.login)
