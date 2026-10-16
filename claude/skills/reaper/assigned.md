@@ -29,6 +29,13 @@ Use the first rule that matches:
 - **🔁 Re-review**: `myReview` isn't null, and either commits landed after it
   (`lastCommitAt` > `myReview.at`) or you're in `requestedReviewers` again.
   The author has acted and the PR is waiting on you, so these come first.
+- **🙋 Only you**: your review is requested (by name or through a team),
+  `myReview` is null, it isn't a draft, and nobody else has reviewed it: no
+  entry in `reviews` (or in `nonCountingReviews`, when the field is there)
+  from anyone but you, in any state. Reviews from bots (coderabbitai, cursor,
+  copilot, chatgpt-codex-connector and the like) don't count as someone else.
+  Nobody has picked these up, so they're yours to take. Mark bot-authored ones
+  with 🤖.
 - **🆕 First review, requested from you**: `requestedFromMeDirectly` and
   `myReview` is null.
 - **👥 Team request only**: requested through a team, not from you by name,
@@ -58,6 +65,8 @@ probably dead. Flag it as "ask the author whether it's still live" rather than
 ```
 ## 🔁 Re-review (2)
 - [app#118](url) by <author> — S +164/−45, 11 files · CI ✅ · pushed 2d after your CHANGES_REQUESTED
+## 🙋 Only you: nobody else has reviewed (3)
+- [inspector#6507](url) by <author> — S +20/−4, 1 file · 0d · CI ✅ (advisory only)
 ## 🆕 Requested from you (5)
 - [api#83](url) by <author> — M · 41d old · CI ✅ · ⚠️ likely dead (no commits in 30d)
 ## 👥 Team only (1)
@@ -66,6 +75,7 @@ probably dead. Flag it as "ask the author whether it's still live" rather than
 ```
 
 End with a single line suggesting the order: re-reviews first, then small
-green PRs that unblock other people, then the large ones. Offer to review any
+green PRs that unblock other people, then the large ones. If the 🙋 group isn't
+empty, add one line: "Run `/reaper tome` to start reviewing the 🙋 PRs." Offer to review any
 of them inline. Review the diff in this session (`gh pr diff <n> -R <repo>`);
 don't fork a review agent.

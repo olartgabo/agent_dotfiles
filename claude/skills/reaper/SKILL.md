@@ -11,14 +11,16 @@ description: >
   URLs and the help each needs. /reaper rereview shows what changed on PRs
   since the user reviewed them and re-reviews only that delta. /reaper owner
   lists the PRs waiting on the user's review that nobody has approved yet.
+  /reaper tome reviews, one by one, the PRs waiting on the user that nobody
+  else has reviewed at all.
   /reaper cull checks stale PRs for being superseded or obsolete and closes
   the ones the user approves. Use when the user runs /reaper, or asks
   "what's the state of my PRs", "what am I blocked on", "what do I need to
   review", "get my approved PRs green", "unblock my PRs", "which PRs I review
   need help", "what changed since I reviewed", "which PRs only I can
-  approve", "close the dead PRs". Add "all" to search every org, not just
-  $REAPER_ORG.
-argument-hint: "[assigned | orange | green | red | nudge | rereview | owner | cull | help] [PR numbers…] [Nd] [all]"
+  approve", "review the ones nobody else has", "close the dead PRs". Add
+  "all" to search every org, not just $REAPER_ORG.
+argument-hint: "[assigned | orange | green | red | nudge | rereview | owner | tome | cull | help] [PR numbers…] [Nd] [all]"
 ---
 
 # Reaper
@@ -35,6 +37,7 @@ argument-hint: "[assigned | orange | green | red | nudge | rereview | owner | cu
 | `/reaper nudge [Nd]` | Slack drafts to reviewers you've waited on | `~/.claude/skills/reaper/nudge.md` |
 | `/reaper rereview [PR numbers…]` | What changed since your review; re-review only that | `~/.claude/skills/reaper/rereview.md` |
 | `/reaper owner [PR numbers…]` | PRs waiting on you that nobody has approved yet | `~/.claude/skills/reaper/owner.md` |
+| `/reaper tome [PR numbers…]` | Review the PRs nobody else has reviewed (submits on your go) | `~/.claude/skills/reaper/tome.md` |
 | `/reaper cull [Nd] [PR numbers…]` | Stale PRs: superseded or still needed? Closes on your approval (writes!) | `~/.claude/skills/reaper/cull.md` |
 | `/reaper help` | Print this table and stop | — |
 
@@ -43,7 +46,7 @@ Invocation and Mode columns of this table plus the `all` note below, and does
 nothing else.
 
 PRs are scoped to the GitHub org in `$REAPER_ORG` (default `MCPJam`). `all`
-can appear in any mode and drops that filter (pass `--all` to the script). For `assigned`, `orange`, `green`, `red`, `nudge`, `rereview`, `owner` or `cull`, read that file and follow it
+can appear in any mode and drops that filter (pass `--all` to the script). For `assigned`, `orange`, `green`, `red`, `nudge`, `rereview`, `owner`, `tome` or `cull`, read that file and follow it
 instead of the rest of this one.
 
 ## Untrusted input
