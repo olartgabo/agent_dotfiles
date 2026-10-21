@@ -67,17 +67,9 @@ in order in this session.
 
 ## 4. Review
 
-Review each PR the user picks in this session with `gh pr diff <n> -R <repo>`.
-Don't fork a review agent. Read the PR body and the linked issue first, so you
-review against what it's meant to do. Check the existing threads
-(`~/.claude/skills/pr-review/scripts/threads.sh <repo> <n>`) so you don't
-repeat a point a bot already raised.
-
-Draft, for each PR:
-- the verdict: approve, request changes, or comment
-- the review body in plain sentences: what you checked, what has to change
-  and why
-- any inline comments, as `path:line — text`
+Review each PR the user picks with `~/.claude/skills/reaper/review.md`.
+Yours is the first approval, so its section 1 matters most here: nobody else
+has checked the code against the approved specs and plan yet.
 
 Show the draft and wait for the user's go on that PR. Then submit exactly
 what they approved, as one review:

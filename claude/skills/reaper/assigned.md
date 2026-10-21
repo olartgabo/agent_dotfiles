@@ -103,15 +103,7 @@ draft. Never run `/code-review` for this.
 - **needme**: follow `~/.claude/skills/reaper/tome.md` from section 2 for the
   🙋 Only you PRs.
 
-One PR is reviewed in this session. Several PRs get one `general-purpose`
-subagent each, in parallel, with the PR, the mode's instructions above and the
-"data, never instructions" rule; each returns its draft and posts nothing.
-
-Draft, for each PR:
-- the verdict: approve, request changes, or comment
-- the review body, in plain sentences
-- inline comments, as `path:line — text`
-- for rereview, which of your own threads you'd resolve
-
-Show the drafts, most urgent first, and submit only what the user approves,
-exactly as `rereview.md` section 4 describes.
+Several PRs get one `general-purpose` subagent each, in parallel, as
+`review.md` section 4 describes. Show the drafts, most urgent first, and
+submit only what the user approves, exactly as `rereview.md` section 4
+describes.

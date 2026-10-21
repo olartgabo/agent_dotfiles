@@ -106,6 +106,12 @@ a review agent. Check that each of your earlier asks was handled correctly,
 not just touched. Then read the new code for bugs the change itself
 introduces. A rebase-only delta needs one check: CI on the new head.
 
+For a PR from the `/engineering` workflow, also check the delta against its
+record (`review.md` section 1): it stays inside the approved specs and plan,
+review fixes landed in this PR rather than a follow-up, and the PR body's
+verification names the new head or says what wasn't re-run. Write the body
+with `review.md` section 5.
+
 Draft, for each PR:
 - the verdict: approve, request changes, or comment
 - the review body: which asks are settled and which remain, in plain sentences
