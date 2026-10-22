@@ -18,8 +18,7 @@ go for that PR, after they've seen the drafted review.
 Keep the PRs where `myReview` isn't null and either commits landed after it
 (`lastCommitAt` > `myReview.at`) or you're re-requested
 (`requestedFromMeDirectly`). If the user named PRs, use only those, and say
-so for any that don't qualify. Each search returns at most 40 PRs. If either
-one hits that cap, say the list may be incomplete.
+so for any that don't qualify.
 
 `myReview` only covers approvals and change requests. Also keep a PR where
 you left only comments and a thread you started has a reply after your last

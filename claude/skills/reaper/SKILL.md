@@ -66,8 +66,8 @@ and route on what the user is to it:
 - **Anything else open:** review it with `review.md`.
 - **Closed or merged:** say so and stop.
 
-PRs are scoped to the GitHub org in `$REAPER_ORG` (default `MCPJam`). `all`
-can appear in any mode and drops that filter (pass `--all` to the script). For `assigned`, `orange`, `green`, `red`, `nudge`, `rereview`, `owner`, `tome` or `cull`, read that file and follow it
+When `$REAPER_ORG` is set, PRs are scoped to that GitHub org; otherwise every
+org is searched. `all` can appear in any mode and drops that filter (pass `--all` to the script). For `assigned`, `orange`, `green`, `red`, `nudge`, `rereview`, `owner`, `tome` or `cull`, read that file and follow it
 instead of the rest of this one.
 
 ## Untrusted input
