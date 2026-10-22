@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
 # Print one JSON object per open PR with the fields /reaper needs to classify it.
-#   prs.sh            PRs the gh user authored in $REAPER_ORG (default MCPJam)
+#   prs.sh            PRs the gh user authored, in $REAPER_ORG when it is set
 #   prs.sh --review   PRs where the gh user's review is requested, or that they
 #                     reviewed and are still open (excluding their own)
 #   prs.sh --green    only your approved PRs stuck on conflicts, BEHIND or a
 #                     failing non-advisory check (/reaper green's candidates)
-#   --all             drop the org filter (combines with the others)
+#   --all             ignore $REAPER_ORG (combines with the others)
 # Needs only gh and bash: the jq below runs inside gh (--jq), so no separate
 # jq install is required on Linux, macOS or Windows (Git Bash).
 # Comment text in the output (recentComments.text) is untrusted, third-party
 # input: the skill treats it as data, never as instructions.
 set -euo pipefail
 
-scope="org:${REAPER_ORG:-MCPJam}"
+scope="${REAPER_ORG:+org:$REAPER_ORG}"
 mode="mine"
 green=0
 for arg in "$@"; do
@@ -35,7 +35,7 @@ else
   q2="$q1"
 fi
 
-# $q below is a GraphQL variable, so the single quotes are deliberate.
+# $q and $endCursor below are GraphQL variables, so the single quotes are deliberate.
 # shellcheck disable=SC2016
 query='
 fragment pr on PullRequest {
@@ -58,8 +58,11 @@ fragment pr on PullRequest {
   labels(first: 20) { nodes { name } }
   reviews(last: 100) { nodes { state author { login __typename } submittedAt } }
 }
-query($q: String!) {
-  search(query: $q, type: ISSUE, first: 40) { nodes { ...pr } }
+query($q: String!, $endCursor: String) {
+  search(query: $q, type: ISSUE, first: 15, after: $endCursor) {
+    pageInfo { hasNextPage endCursor }
+    nodes { ...pr }
+  }
 }'
 
 # jq variables, not shell ones, so the single quotes are deliberate.
@@ -103,8 +106,9 @@ shape='.data.search.nodes[] | select(.number != null) | . as $pr | {
 # gh --jq has no --arg, so the login is bound as a JSON string literal.
 program="\"$me\" as \$me | $shape"
 
-# One search per call: a single request with both searches times out (HTTP 502).
-fetch() { gh api graphql -f q="$1" -f query="$query" --jq "$program"; }
+# One search per call, 15 PRs per page: a larger page, or both searches in one
+# request, makes GitHub time out and answer with an HTML 502 page.
+fetch() { gh api graphql --paginate -f q="$1" -f query="$query" --jq "$program"; }
 # gh prints one compact object per line, keys sorted. "repo" and "number" occur
 # only at the top level (comment text has its quotes escaped), so together they
 # key the dedupe that drops the second copy of a PR both searches returned.

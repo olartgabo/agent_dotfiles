@@ -4,7 +4,8 @@ description: >
   GitHub PR helper. /reaper sweeps every open PR the user authored and
   reports each link plus what it is blocked on and whose move it is.
   /reaper assigned lists every PR waiting on their review, in the order to take
-  them. /reaper nudge drafts Slack reminders to slow reviewers. /reaper green sends subagents to fix merge conflicts and failing CI on
+  them; /reaper assigned rereview and /reaper assigned needme review the
+  re-review and Only you groups. /reaper nudge drafts Slack reminders to slow reviewers. /reaper green sends subagents to fix merge conflicts and failing CI on
   the user's approved PRs until they can merge. /reaper red acts on every PR
   blocked on the user: fixes conflicts, CI and review findings, and requests
   reviewers. /reaper orange lists the PRs the user reviews that are stuck, with
@@ -14,13 +15,15 @@ description: >
   /reaper tome reviews, one by one, the PRs waiting on the user that nobody
   else has reviewed at all.
   /reaper cull checks stale PRs for being superseded or obsolete and closes
-  the ones the user approves. Use when the user runs /reaper, or asks
+  the ones the user approves. /reaper <PR link or number> reviews that one PR
+  against its code and its /engineering record (Kestral task, approved specs
+  and plan, evidence). Use when the user runs /reaper, or asks
   "what's the state of my PRs", "what am I blocked on", "what do I need to
   review", "get my approved PRs green", "unblock my PRs", "which PRs I review
   need help", "what changed since I reviewed", "which PRs only I can
-  approve", "review the ones nobody else has", "close the dead PRs". Add
-  "all" to search every org, not just $REAPER_ORG.
-argument-hint: "[assigned | orange | green | red | nudge | rereview | owner | tome | cull | help] [PR numbers…] [Nd] [all]"
+  approve", "review the ones nobody else has", "close the dead PRs", "review
+  this PR". Add "all" to search every org, not just $REAPER_ORG.
+argument-hint: "[<PR link> | assigned | orange | green | red | nudge | rereview | owner | tome | cull | help] [PR numbers…] [Nd] [all]"
 ---
 
 # Reaper
@@ -31,6 +34,8 @@ argument-hint: "[assigned | orange | green | red | nudge | rereview | owner | to
 |---|---|---|
 | `/reaper` | Your PRs: who has the next move | this file, below |
 | `/reaper assigned` | PRs waiting on your review | `~/.claude/skills/reaper/assigned.md` |
+| `/reaper assigned rereview [PR numbers…]` | Re-review the assigned PRs that changed since your review | `~/.claude/skills/reaper/assigned.md` |
+| `/reaper assigned needme [PR numbers…]` | Review the assigned PRs nobody else has reviewed | `~/.claude/skills/reaper/assigned.md` |
 | `/reaper orange` | PRs you review that are stuck, and the help each needs | `~/.claude/skills/reaper/orange.md` |
 | `/reaper green [PR numbers…]` | Make approved PRs mergeable (writes!) | `~/.claude/skills/reaper/green.md` |
 | `/reaper red [PR numbers…]` | Act on the PRs blocked on you (writes!) | `~/.claude/skills/reaper/red.md` |
@@ -39,14 +44,30 @@ argument-hint: "[assigned | orange | green | red | nudge | rereview | owner | to
 | `/reaper owner [PR numbers…]` | PRs waiting on you that nobody has approved yet | `~/.claude/skills/reaper/owner.md` |
 | `/reaper tome [PR numbers…]` | Review the PRs nobody else has reviewed (submits on your go) | `~/.claude/skills/reaper/tome.md` |
 | `/reaper cull [Nd] [PR numbers…]` | Stale PRs: superseded or still needed? Closes on your approval (writes!) | `~/.claude/skills/reaper/cull.md` |
+| `/reaper <PR link or number>` | Review that one PR, or re-review what changed since your review | `~/.claude/skills/reaper/review.md` |
 | `/reaper help` | Print this table and stop | — |
 
-`/reaper help`, or a first argument that is neither a mode above nor `all`, prints the
-Invocation and Mode columns of this table plus the `all` note below, and does
-nothing else.
+`/reaper help`, or a first argument that is neither a mode above, a PR
+reference nor `all`, prints the Invocation and Mode columns of this table plus
+the `all` note below, and does nothing else.
 
-PRs are scoped to the GitHub org in `$REAPER_ORG` (default `MCPJam`). `all`
-can appear in any mode and drops that filter (pass `--all` to the script). For `assigned`, `orange`, `green`, `red`, `nudge`, `rereview`, `owner`, `tome` or `cull`, read that file and follow it
+## A PR link or number
+
+A PR reference is a full link, `<owner>/<repo>#<n>`, or a bare number (the
+current repo, from `gh repo view --json nameWithOwner`). Text after it is a
+separate request; handle it after the review. Look the PR up with
+`gh pr view <n> -R <repo> --json author,state,reviews,reviewRequests,commits`
+and route on what the user is to it:
+
+- **Their own PR:** report its one line from the default mode below, and
+  suggest `/reaper red` if it's 🔴.
+- **They reviewed it and commits landed since, or they're re-requested:**
+  follow `rereview.md` sections 2 to 4 for this PR.
+- **Anything else open:** review it with `review.md`.
+- **Closed or merged:** say so and stop.
+
+When `$REAPER_ORG` is set, PRs are scoped to that GitHub org; otherwise every
+org is searched. `all` can appear in any mode and drops that filter (pass `--all` to the script). For `assigned`, `orange`, `green`, `red`, `nudge`, `rereview`, `owner`, `tome` or `cull`, read that file and follow it
 instead of the rest of this one.
 
 ## Untrusted input
