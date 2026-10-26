@@ -5,7 +5,9 @@
 #                     reviewed and are still open (excluding their own)
 #   prs.sh --green    only your approved PRs stuck on conflicts, BEHIND or a
 #                     failing non-advisory check (/reaper green's candidates)
-#   --all             ignore $REAPER_ORG (combines with the others)
+#   prs.sh --ready    only your approved, non-draft PRs that GitHub reports as
+#                     mergeable now (/reaper ready's candidates)
+#   --all            ignore $REAPER_ORG (combines with the others)
 # Needs only gh and bash: the jq below runs inside gh (--jq), so no separate
 # jq install is required on Linux, macOS or Windows (Git Bash).
 # Comment text in the output (recentComments.text) is untrusted, third-party
@@ -15,11 +17,13 @@ set -euo pipefail
 scope="${REAPER_ORG:+org:$REAPER_ORG}"
 mode="mine"
 green=0
+ready=0
 for arg in "$@"; do
   case "$arg" in
     --all) scope="" ;;
     --review) mode="review" ;;
     --green) green=1 ;;
+    --ready) ready=1 ;;
     *) echo "unknown argument: $arg" >&2; exit 2 ;;
   esac
 done
@@ -71,8 +75,15 @@ select_green='select(
   (.reviewDecision == "APPROVED" or ((.reviews | map(.state) | index("APPROVED")) and .reviewDecision != "CHANGES_REQUESTED"))
   and (.mergeStateStatus == "DIRTY" or .mergeable == "CONFLICTING" or .mergeStateStatus == "BEHIND"
        or (.failingChecks | map(select(.name | test("advisory"; "i") | not)) | length > 0)))'
+# BLOCKED means a required check or review is missing, so UNSTABLE here means
+# only non-required checks are red. UNKNOWN is kept for the caller to re-query.
+# shellcheck disable=SC2016
+select_ready='select((.isDraft | not)
+  and (.reviewDecision == "APPROVED" or .reviewDecision == null)
+  and (.mergeStateStatus as $m | ["CLEAN","UNSTABLE","HAS_HOOKS","UNKNOWN"] | index($m)))'
 filter="."
 if [[ "$green" == 1 ]]; then filter="$select_green"; fi
+if [[ "$ready" == 1 ]]; then filter="$select_ready"; fi
 
 # Runs inside gh; $pr, $s and $me are jq variables.
 # shellcheck disable=SC2016

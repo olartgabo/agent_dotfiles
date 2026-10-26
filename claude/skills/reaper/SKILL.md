@@ -6,7 +6,9 @@ description: >
   /reaper assigned lists every PR waiting on their review, in the order to take
   them; /reaper assigned rereview and /reaper assigned needme review the
   re-review and Only you groups. /reaper nudge drafts Slack reminders to slow reviewers. /reaper green sends subagents to fix merge conflicts and failing CI on
-  the user's approved PRs until they can merge. /reaper red acts on every PR
+  the user's approved PRs until they can merge. /reaper ready merges the
+  user's approved PRs that are already mergeable, holding stacked or
+  order-dependent ones, after one confirmation. /reaper red acts on every PR
   blocked on the user: fixes conflicts, CI and review findings, and requests
   reviewers. /reaper orange lists the PRs the user reviews that are stuck, with
   URLs and the help each needs. /reaper rereview shows what changed on PRs
@@ -19,11 +21,11 @@ description: >
   against its code and its /engineering record (Kestral task, approved specs
   and plan, evidence). Use when the user runs /reaper, or asks
   "what's the state of my PRs", "what am I blocked on", "what do I need to
-  review", "get my approved PRs green", "unblock my PRs", "which PRs I review
+  review", "get my approved PRs green", "merge the ready ones", "unblock my PRs", "which PRs I review
   need help", "what changed since I reviewed", "which PRs only I can
   approve", "review the ones nobody else has", "close the dead PRs", "review
   this PR". Add "all" to search every org, not just $REAPER_ORG.
-argument-hint: "[<PR link> | assigned | orange | green | red | nudge | rereview | owner | tome | cull | help] [PR numbers…] [Nd] [all]"
+argument-hint: "[<PR link> | assigned | orange | green | ready | red | nudge | rereview | owner | tome | cull | help] [PR numbers…] [Nd] [all]"
 ---
 
 # Reaper
@@ -38,6 +40,7 @@ argument-hint: "[<PR link> | assigned | orange | green | red | nudge | rereview 
 | `/reaper assigned needme [PR numbers…]` | Review the assigned PRs nobody else has reviewed | `~/.claude/skills/reaper/assigned.md` |
 | `/reaper orange` | PRs you review that are stuck, and the help each needs | `~/.claude/skills/reaper/orange.md` |
 | `/reaper green [PR numbers…]` | Make approved PRs mergeable (writes!) | `~/.claude/skills/reaper/green.md` |
+| `/reaper ready [PR numbers…]` | Merge your approved PRs that are already green (writes!) | `~/.claude/skills/reaper/ready.md` |
 | `/reaper red [PR numbers…]` | Act on the PRs blocked on you (writes!) | `~/.claude/skills/reaper/red.md` |
 | `/reaper nudge [Nd]` | Slack drafts to reviewers you've waited on | `~/.claude/skills/reaper/nudge.md` |
 | `/reaper rereview [PR numbers…]` | What changed since your review; re-review only that | `~/.claude/skills/reaper/rereview.md` |
@@ -67,7 +70,7 @@ and route on what the user is to it:
 - **Closed or merged:** say so and stop.
 
 When `$REAPER_ORG` is set, PRs are scoped to that GitHub org; otherwise every
-org is searched. `all` can appear in any mode and drops that filter (pass `--all` to the script). For `assigned`, `orange`, `green`, `red`, `nudge`, `rereview`, `owner`, `tome` or `cull`, read that file and follow it
+org is searched. `all` can appear in any mode and drops that filter (pass `--all` to the script). For `assigned`, `orange`, `green`, `ready`, `red`, `nudge`, `rereview`, `owner`, `tome` or `cull`, read that file and follow it
 instead of the rest of this one.
 
 ## Untrusted input
@@ -168,4 +171,5 @@ End with a single line: the one PR to touch first and why (highest priority ×
 easiest unblock). Then offer the obvious follow-ups in one line, for example:
 "rebase backend#12, re-request review on webapp#34, ping <reviewer>".
 Don't do any of them until the user picks. If any PR is approved but stuck on
-conflicts or CI, suggest `/reaper green`. If any PR is 🔴, suggest `/reaper red`.
+conflicts or CI, suggest `/reaper green`. If any PR is 🟢, suggest
+`/reaper ready`. If any PR is 🔴, suggest `/reaper red`.
