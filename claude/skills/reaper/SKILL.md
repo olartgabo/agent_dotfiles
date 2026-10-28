@@ -100,7 +100,9 @@ request reviewers unless the user says so after seeing the report.
 This uses the `gh` CLI, not the GitHub MCP. It prints one JSON object per PR
 with these fields: `mergeable`, `mergeStateStatus`, `reviewDecision`,
 `failingChecks` (name + url), `pendingChecks`, `requestedReviewers`,
-latest `reviews`, `unresolvedThreads` (author, outdated flag),
+latest `reviews` (only ones that count toward the merge rule),
+`nonCountingReviews` (approvals or change requests from people without write
+access, which GitHub shows but never counts), `unresolvedThreads` (author, outdated flag),
 `recentComments` from people other than the author, `lastCommitAt`,
 `updatedAt` and `isDraft`.
 
@@ -136,7 +138,7 @@ Use the first rule that matches.
 - Unresolved, non-outdated review threads → reply to them or resolve them.
 - An unanswered human question in the comments → answer it.
 - `BEHIND` → update the branch.
-- Not a draft, `REVIEW_REQUIRED`, no `requestedReviewers` and no `reviews` → nobody has been asked, so request reviewers.
+- Not a draft, `REVIEW_REQUIRED`, no `requestedReviewers` and no `reviews` → nobody has been asked, so request reviewers. If `nonCountingReviews` has an approval, say so: that reviewer lacks write access, so someone who has it must approve.
 - `CHANGES_REQUESTED`, the feedback has been addressed by a newer commit, and the reviewer isn't re-requested → re-request review.
 - Draft → finish it and mark it ready, or close it.
 
