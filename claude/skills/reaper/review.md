@@ -1,7 +1,7 @@
 # Reviewing a PR
 
 Every reaper mode that reviews a whole PR follows this file: `assigned needme`,
-`owner` and `/reaper <PR link>`. `rereview` reviews only the delta and borrows
+`owner` and `/reaper <PR links…>`. `rereview` reviews only the delta and borrows
 sections 1 and 5.
 Reviewing authorizes reading only. Submitting a review, posting a comment or
 resolving a thread needs the user's go for that PR, after they've seen the

@@ -17,15 +17,15 @@ description: >
   /reaper tome reviews, one by one, the PRs waiting on the user that nobody
   else has reviewed at all.
   /reaper cull checks stale PRs for being superseded or obsolete and closes
-  the ones the user approves. /reaper <PR link or number> reviews that one PR
-  against its code and its /engineering record (Kestral task, approved specs
-  and plan, evidence). Use when the user runs /reaper, or asks
+  the ones the user approves. /reaper <PR links or numbers…> reviews those PRs
+  against their code and their /engineering record (Kestral task, approved
+  specs and plan, evidence). Use when the user runs /reaper, or asks
   "what's the state of my PRs", "what am I blocked on", "what do I need to
   review", "get my approved PRs green", "merge the ready ones", "unblock my PRs", "which PRs I review
   need help", "what changed since I reviewed", "which PRs only I can
   approve", "review the ones nobody else has", "close the dead PRs", "review
   this PR". Add "all" to search every org, not just $REAPER_ORG.
-argument-hint: "[<PR link> | assigned | orange | green | ready | red | nudge | rereview | owner | tome | cull | help] [PR numbers…] [Nd] [all]"
+argument-hint: "[<PR links…> | assigned | orange | green | ready | red | nudge | rereview | owner | tome | cull | help] [PR numbers…] [Nd] [all]"
 ---
 
 # Reaper
@@ -47,27 +47,32 @@ argument-hint: "[<PR link> | assigned | orange | green | ready | red | nudge | r
 | `/reaper owner [PR numbers…]` | PRs waiting on you that nobody has approved yet | `~/.claude/skills/reaper/owner.md` |
 | `/reaper tome [PR numbers…]` | Review the PRs nobody else has reviewed (submits on your go) | `~/.claude/skills/reaper/tome.md` |
 | `/reaper cull [Nd] [PR numbers…]` | Stale PRs: superseded or still needed? Closes on your approval (writes!) | `~/.claude/skills/reaper/cull.md` |
-| `/reaper <PR link or number>` | Review that one PR, or re-review what changed since your review | `~/.claude/skills/reaper/review.md` |
+| `/reaper <PR links or numbers…>` | Review those PRs, or re-review what changed since your review | `~/.claude/skills/reaper/review.md` |
 | `/reaper help` | Print this table and stop | — |
 
 `/reaper help`, or a first argument that is neither a mode above, a PR
 reference nor `all`, prints the Invocation and Mode columns of this table plus
 the `all` note below, and does nothing else.
 
-## A PR link or number
+## PR links or numbers
 
 A PR reference is a full link, `<owner>/<repo>#<n>`, or a bare number (the
-current repo, from `gh repo view --json nameWithOwner`). Text after it is a
-separate request; handle it after the review. Look the PR up with
+current repo, from `gh repo view --json nameWithOwner`). Take every reference
+in the arguments, in the order given, separated by spaces, commas or newlines;
+drop duplicates. Other text is a separate request; handle it after the
+reviews. Look each PR up with
 `gh pr view <n> -R <repo> --json author,state,reviews,reviewRequests,commits`
-and route on what the user is to it:
+and route it on what the user is to it:
 
 - **Their own PR:** report its one line from the default mode below, and
   suggest `/reaper red` if it's 🔴.
 - **They reviewed it and commits landed since, or they're re-requested:**
   follow `rereview.md` sections 2 to 4 for this PR.
 - **Anything else open:** review it with `review.md`.
-- **Closed or merged:** say so and stop.
+- **Closed or merged:** say so and move on to the next one.
+
+With several PRs, `review.md` section 4 says who does the reading. Show the
+own-PR lines first, then every draft together, and ask once which to submit.
 
 When `$REAPER_ORG` is set, PRs are scoped to that GitHub org; otherwise every
 org is searched. `all` can appear in any mode and drops that filter (pass `--all` to the script). For `assigned`, `orange`, `green`, `ready`, `red`, `nudge`, `rereview`, `owner`, `tome` or `cull`, read that file and follow it
