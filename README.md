@@ -34,7 +34,7 @@ Add `all` to any of these to search every org.
 
 | Env var | Default | Purpose |
 |---|---|---|
-| `REAPER_ORG` | *(unset: every org)* | GitHub org the searches are scoped to |
+| `REAPER_ORG` | `MCPJam` | GitHub org the searches are scoped to; `all` searches every org |
 | `REAPER_CLONE_ROOTS` | *(searches `~`)* | Colon-separated dirs where `/reaper green` and `/sweep all` look for local clones |
 
 ### `/kestral`: Kestral task audit
