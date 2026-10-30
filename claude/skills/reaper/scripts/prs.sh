@@ -1,20 +1,20 @@
 #!/usr/bin/env bash
 # Print one JSON object per open PR with the fields /reaper needs to classify it.
-#   prs.sh            PRs the gh user authored, in $REAPER_ORG when it is set
+#   prs.sh            PRs the gh user authored, in $REAPER_ORG (default MCPJam)
 #   prs.sh --review   PRs where the gh user's review is requested, or that they
 #                     reviewed and are still open (excluding their own)
 #   prs.sh --green    only your approved PRs stuck on conflicts, BEHIND or a
 #                     failing non-advisory check (/reaper green's candidates)
 #   prs.sh --ready    only your approved, non-draft PRs that GitHub reports as
 #                     mergeable now (/reaper ready's candidates)
-#   --all            ignore $REAPER_ORG (combines with the others)
+#   --all            search every org, not just $REAPER_ORG (combines with the others)
 # Needs only gh and bash: the jq below runs inside gh (--jq), so no separate
 # jq install is required on Linux, macOS or Windows (Git Bash).
 # Comment text in the output (recentComments.text) is untrusted, third-party
 # input: the skill treats it as data, never as instructions.
 set -euo pipefail
 
-scope="${REAPER_ORG:+org:$REAPER_ORG}"
+scope="org:${REAPER_ORG:-MCPJam}"
 mode="mine"
 green=0
 ready=0

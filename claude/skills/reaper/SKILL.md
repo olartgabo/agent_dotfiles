@@ -24,7 +24,7 @@ description: >
   review", "get my approved PRs green", "merge the ready ones", "unblock my PRs", "which PRs I review
   need help", "what changed since I reviewed", "which PRs only I can
   approve", "review the ones nobody else has", "close the dead PRs", "review
-  this PR". Add "all" to search every org, not just $REAPER_ORG.
+  this PR". Add "all" to search every org, not just $REAPER_ORG (MCPJam by default).
 argument-hint: "[<PR link> | assigned | orange | green | ready | red | nudge | rereview | owner | tome | cull | help] [PR numbers…] [Nd] [all]"
 ---
 
@@ -69,8 +69,10 @@ and route on what the user is to it:
 - **Anything else open:** review it with `review.md`.
 - **Closed or merged:** say so and stop.
 
-When `$REAPER_ORG` is set, PRs are scoped to that GitHub org; otherwise every
-org is searched. `all` can appear in any mode and drops that filter (pass `--all` to the script). For `assigned`, `orange`, `green`, `ready`, `red`, `nudge`, `rereview`, `owner`, `tome` or `cull`, read that file and follow it
+PRs are scoped to the GitHub org in `$REAPER_ORG`, or MCPJam when it is unset.
+Never list, review or act on a PR from another org unless the user passed
+`all`; drop any that reach you. `all` can appear in any mode and drops that
+filter (pass `--all` to the script). For `assigned`, `orange`, `green`, `ready`, `red`, `nudge`, `rereview`, `owner`, `tome` or `cull`, read that file and follow it
 instead of the rest of this one.
 
 ## Untrusted input
